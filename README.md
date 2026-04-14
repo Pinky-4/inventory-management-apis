@@ -10,18 +10,18 @@ The main idea behind this project is to handle stock correctly (especially durin
 - [API Reference](#api-reference)
 - [Caching Strategy](#caching-strategy)
 - [Indexing Decisions](#indexing-decisions)
-- [Assumptions](#assumption)
+- [Assumptions](#assumptions)
 - [Notes](#notes)
 
 ## Setup Instructions
 
-# Requirements
-PHP 8.1+
-Laravel 10+
-MySQL 8+
-Redis (for caching)
+### Requirements
+- PHP 8.1+
+- Laravel 10+
+- MySQL 8+
+- Redis (for caching)
 
-# Folder Structure
+### Folder Structure
 
 ```
 Root
@@ -40,7 +40,7 @@ Root
 |- package.json
 ```
 
-# Clone Project
+### Clone Project
 
 To start using Inventory Management Apis, clone the repository:
 
@@ -48,13 +48,13 @@ To start using Inventory Management Apis, clone the repository:
 git clone git@bitbucket.org:inventory-management-apis.git
 ```
 
-# Install Dependencies 
+### Install Dependencies 
 
 ```bash
 composer install
 ```
 
-# Configuration
+### Configuration
 
 Laravel .env Setup
 
@@ -66,19 +66,19 @@ cp .env.example .env
 
 Update the configurations according to your environment in the `.env` file.
 
-# Database Setup
+### Database Setup
 
 Run migrations and seed the database:
 
 ```bash
 php artisan migrate --seed
 ```
-# Seeder includes:
+### Seeder includes:
 
-Nested categories
-Around 50 products
-Multiple warehouses
-Stock and movement records (including edge cases)
+- Nested categories
+- Around 50 products
+- Multiple warehouses
+- Stock and movement records (including edge cases)
 
 Generate an application key:
 
@@ -92,7 +92,7 @@ Create a symbolic link for storage:
 php artisan storage:link
 ```    
 
-# Running the Project
+### Running the Project
 
 In Terminal run below command for running the project for Development Only:
 
@@ -104,15 +104,15 @@ Run the project locally for development:
 php artisan serve
 ```
 
-## API Reference : 
+## API Reference
 
-# 1. Category Tree Endpoint 
+### 1. Category Tree Endpoint 
 
 GET /api/categories/tree
 
-Returns nested category structure
-Cached for 1 hour
-Skips inactive categories
+- Returns nested category structure
+- Cached for 1 hour
+- Skips inactive categories
 
 Response : 
 
@@ -165,12 +165,13 @@ Response :
 }
 ```
 
-# 2. Product Listing with Filters
+### 2. Product Listing with Filters
 
 GET /api/products
 
 Query Params : 
 
+```bash
 page:1
 category_id:
 warehouse_id:
@@ -180,6 +181,7 @@ max_price:
 sort_by: // name | price | stock
 sort_order: // sort field which are defined in sort_by and that sorting order is defined in this asc|desc.
 search: // Search with name and sku
+```
 
 Response : 
 
@@ -218,13 +220,13 @@ Response :
 }
 ```
 
-# 3. Stock Adjustment Endpoint 
+### 3. Stock Adjustment Endpoint 
 
 POST /api/stock/adjust
 
 Form Data : 
 For Example : 
-
+ ```bash
 product_id:3
 warehouse_id:3
 movement_type:1
@@ -232,12 +234,13 @@ quantity:2
 reference_id:1
 reference_type:product
 note:Hello i am
+```
 
 Rules:
 
-Cannot go below available stock
-Uses DB transaction + row locking
-Every change logged in stock_movements
+- Cannot go below available stock
+- Uses DB transaction + row locking
+- Every change logged in stock_movements
 
 Response : 
 ```bash
@@ -250,7 +253,7 @@ Response :
 }
 ```
 
-# 4. Inventory Summary Report
+### 4. Inventory Summary Report
 
 GET /api/inventory/summary
 
@@ -291,7 +294,7 @@ Response :
 }
 ```
 
-# 5. Movement History with Aggregations
+### 5. Movement History with Aggregations
 
 GET /api/products/{id}/movements
 
@@ -348,12 +351,14 @@ Response :
 }
 ```
 
-# 6. Low Stock Alert Endpoint 
+### 6. Low Stock Alert Endpoint 
 
 GET /api/inventory/low-stock
 
 Query Params : 
+```bash
 threshold=10
+```
 
 Response : 
 ```bash
@@ -397,79 +402,81 @@ Response :
 }
 ```
 
-## Caching Strategy : 
+## Caching Strategy
 
 Cache Driver
 Redis is used for caching.
 
-# Cache Key Naming Convention : 
+### Cache Key Naming Convention : 
 Consistent format:
 inventory:<resource>:<optional-params>
 
 Examples:
-inventory:categories:tree
-inventory:summary
-inventory:low_stock:10
+- inventory:categories:tree
+- inventory:summary
+- inventory:low_stock:10
 
-# TTL (Time To Live)
-Category Tree → 30 minutes
-Inventory Summary → 10 minutes
-Low Stock → 10 minutes
+### TTL (Time To Live)
+- Category Tree → 30 minutes
+- Inventory Summary → 10 minutes
+- Low Stock → 10 minutes
 
-# Cache Invalidation
+### Cache Invalidation
 Endpoint -> Invalidation Trigger
-Category Tree -> On category create/update/delete
-Inventory Summary -> On stock update
-Low Stock -> On stock update
+- Category Tree -> On category create/update/delete
+- Inventory Summary -> On stock update
+- Low Stock -> On stock update
 
-# Notes
-Cache is not used for empty responses
-Cache is cleared immediately after write operations
-Filters (like threshold) are included in cache keys
+### Notes
+- Cache is not used for empty responses
+- Cache is cleared immediately after write operations
+- Filters (like threshold) are included in cache keys
 
 ## Indexing Decisions
 
 Indexes are added only where queries require faster filtering or joins.
 
-Categories Table : 
-parent_id : Used for building category tree
-is_active : Used to filter active categories
+- Categories Table : 
+    - parent_id : Used for building category tree
+    - is_active : Used to filter active categories
 
-Products Table :
-category_id	: Filtering by category
-base_price : Price range filtering
-FULLTEXT(name, sku) : Optimized search
+- Products Table :
+    - category_id	: Filtering by category
+    - base_price : Price range filtering
+    - FULLTEXT(name, sku) : Optimized search
 
-Stock Table :
-UNIQUE(product_id, warehouse_id) : Prevent duplicate stock records
-(product_id, warehouse_id) : Fast lookup during stock updates
+- Stock Table :
+    - UNIQUE(product_id, warehouse_id) : Prevent duplicate stock records
+    - (product_id, warehouse_id) : Fast lookup during stock updates
 
-Stock Movements Table :
-(product_id, warehouse_id) : Filtering movement history
-movement_type : Used in aggregation
-moved_at : Date range filtering
-(product_id, moved_at) : Optimized reporting queries
+- Stock Movements Table :
+    - (product_id, warehouse_id) : Filtering movement history
+    - movement_type : Used in aggregation
+    - moved_at : Date range filtering
+    - (product_id, moved_at) : Optimized reporting queries
 
-## Assumptions
+### Assumptions
 Movement types are stored as integers:
+```
 1 = Stock In
 2 = Stock Out
 3 = Reservation
 4 = Reservation Release
+```
 
-Available stock is calculated as:
+#### Available stock is calculated as:
 
-quantity - reserved_quantity
-Stock cannot go below zero
-Reserved quantity cannot exceed total quantity
-Inactive categories are excluded from tree, but active children are still included
-Products with zero stock are still included in inventory summary
-Low stock threshold defaults to 10 if not provided
+- quantity - reserved_quantity
+- Stock cannot go below zero
+- Reserved quantity cannot exceed total quantity
+- Inactive categories are excluded from tree, but active children are still included
+- Products with zero stock are still included in inventory summary
+- Low stock threshold defaults to 10 if not provided
 
-## Notes
-Business logic is handled in Service classes
-Controllers are kept minimal
-API Resources are used for all responses
-Database aggregation is used for reports (no PHP loops)
-Transactions are used for stock updates to maintain consistency
+### Notes
+- Business logic is handled in Service classes
+- Controllers are kept minimal
+- API Resources are used for all responses
+- Database aggregation is used for reports (no PHP loops)
+- Transactions are used for stock updates to maintain consistency
 
