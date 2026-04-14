@@ -1,0 +1,273 @@
+{
+  "info": {
+    "_postman_id": "497f3f6e-498b-4077-a014-c16fc1a3a939",
+    "name": "Inventory Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "23046184",
+    "_collection_link": "https://go.postman.co/collection/23046184-497f3f6e-498b-4077-a014-c16fc1a3a939?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "4.1 Category Tree Endpoint",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/categories/tree",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "categories",
+            "tree"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4.2 Product Listing with Filters ",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/products?page=1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "products"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "category_id",
+              "value": "",
+              "disabled": true
+            },
+            {
+              "key": "warehouse_id",
+              "value": "3",
+              "disabled": true
+            },
+            {
+              "key": "available",
+              "value": "0",
+              "description": "// 0=> Zero stock meand no stock available, 1=> Stock Available",
+              "disabled": true
+            },
+            {
+              "key": "min_price",
+              "value": "5000",
+              "disabled": true
+            },
+            {
+              "key": "max_price",
+              "value": "6000",
+              "disabled": true
+            },
+            {
+              "key": "sort_by",
+              "value": "stock",
+              "description": "// name | price | stock",
+              "disabled": true
+            },
+            {
+              "key": "search",
+              "value": "SKU-6J8PQM7L",
+              "description": "// Search with name and sku",
+              "disabled": true
+            },
+            {
+              "key": "sort_order",
+              "value": "desc",
+              "description": "// sort field which are defined in sort_by and that sorting order is defined in this asc|desc.",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4.3 Stock Adjustment Endpoint",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "product_id",
+              "value": "3",
+              "type": "text",
+              "uuid": "f07afb17-be27-40f4-a79f-1cef9a3532de"
+            },
+            {
+              "key": "warehouse_id",
+              "value": "3",
+              "type": "text",
+              "uuid": "80b68745-63f6-4eaf-8595-2ad9f080fdfe"
+            },
+            {
+              "key": "movement_type",
+              "value": "1",
+              "type": "text",
+              "uuid": "df4b7120-f16e-4fc9-859c-cee9a8f48585"
+            },
+            {
+              "key": "quantity",
+              "value": "2",
+              "type": "text",
+              "uuid": "3befc0c9-5c76-45cc-a1b7-f1888ac4f06f"
+            },
+            {
+              "key": "reference_id",
+              "value": "1",
+              "type": "text",
+              "uuid": "f722f41f-d6e7-470b-b4f8-43e4590bd0d0"
+            },
+            {
+              "key": "reference_type",
+              "value": "product",
+              "type": "text",
+              "uuid": "14112512-87ab-4319-aae2-4c3651381227"
+            },
+            {
+              "key": "note",
+              "value": "Hello i am",
+              "type": "text",
+              "uuid": "904be307-1d50-4f77-bf1a-29be21b05171"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/stock/adjust",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "stock",
+            "adjust"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4.4 Inventory Summary Report ",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/inventory/summary",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "inventory",
+            "summary"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4.5 Movement History with Aggregation",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/products/3/movements",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "products",
+            "3",
+            "movements"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4.6 Low Stock Alert Endpoint ",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/inventory/low-stock?threshold=3",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "inventory",
+            "low-stock"
+          ],
+          "query": [
+            {
+              "key": "threshold",
+              "value": "3"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
