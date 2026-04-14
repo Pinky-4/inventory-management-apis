@@ -417,9 +417,10 @@ Examples:
 - inventory:low_stock:10
 
 ### TTL (Time To Live)
-- Category Tree → 30 minutes
+- Category Tree → 10 minutes
 - Inventory Summary → 10 minutes
 - Low Stock → 10 minutes
+- Product Search Filter -> 5 minutes
 
 ### Cache Invalidation
 Endpoint -> Invalidation Trigger

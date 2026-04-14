@@ -9,7 +9,7 @@ class CategoryService
 {
     public function getTree()
     {
-        return Cache::remember('inventory:categories:tree', 3600, function () {
+        return Cache::remember('inventory:categories:tree', now()->addMinutes(10), function () {
             $all = Category::select('id', 'name', 'parent_id', 'is_active')->get();
             $active = Category::active()
                 ->select('id', 'name', 'parent_id', 'is_active')

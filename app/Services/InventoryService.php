@@ -11,7 +11,7 @@ class InventoryService
 
     public function getSummary()
     {
-        return Cache::remember($this->cacheKey, 300, function () {
+        return Cache::remember($this->cacheKey, now()->addMinutes(10), function () {
 
             return DB::table('products as p')
                 ->leftJoin('stock as s', 'p.id', '=', 's.product_id')
